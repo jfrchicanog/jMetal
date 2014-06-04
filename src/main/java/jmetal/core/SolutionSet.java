@@ -72,12 +72,13 @@ public class SolutionSet implements Serializable {
    * @return True If the <code>Solution</code> has been inserted, false
    * otherwise.
    */
-  public boolean add(Solution solution) throws JMException {
+  public boolean add(Solution solution) {
     if (solutionsList_.size() == capacity_) {
       Configuration.logger_.severe("The population is full");
       Configuration.logger_.severe("Capacity is : " + capacity_);
       Configuration.logger_.severe("\t Size is: " + this.size());
-        throw new JMException("The population is full. Capacity is : " + capacity_ + "") ;
+
+      return false ;
     }
 
     solutionsList_.add(solution);

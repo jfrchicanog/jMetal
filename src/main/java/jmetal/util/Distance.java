@@ -197,7 +197,7 @@ public class Distance {
    * @throws JMException 
    */
 
-  public void crowdingDistanceAssignment(SolutionSet solutionSet, int nObjs) throws JMException {
+  public void crowdingDistanceAssignment(SolutionSet solutionSet, int nObjs) {
     int size = solutionSet.size();
 
     if (size == 0) {

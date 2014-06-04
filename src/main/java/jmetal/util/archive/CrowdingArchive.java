@@ -103,7 +103,7 @@ public class CrowdingArchive extends Archive {
    * otherwise.
    * @throws JMException 
    */
-  public boolean add(Solution solution) throws JMException {
+  public boolean add(Solution solution) {
     int flag = 0;
     int i = 0;
     Solution aux; //Store an solution temporally
@@ -116,7 +116,7 @@ public class CrowdingArchive extends Archive {
       } else if (flag == -1) {       // A solution in the archive is dominated
         solutionsList_.remove(i);    // Remove it from the population            
       } else {
-        if (equals_.compare(aux, solution) == 0) { // There is an equal solution
+        if (equals_.compare(aux, solution) == 0) {
           // in the population
           return false; // Discard the new solution
         }  // if
@@ -130,5 +130,5 @@ public class CrowdingArchive extends Archive {
       remove(indexWorst(crowdingDistance_));
     }
     return true;
-  } // add
-} // CrowdingArchive
+  }
+}
