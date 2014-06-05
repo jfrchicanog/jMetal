@@ -20,14 +20,15 @@
 
 package jmetal.metaheuristics.nsgaII;
 
-import jmetal.core.*;
-import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.core.Algorithm;
+import jmetal.core.Operator;
+import jmetal.core.Solution;
+import jmetal.core.SolutionSet;
 import jmetal.util.Distance;
 import jmetal.util.JMException;
 import jmetal.util.Ranking;
 import jmetal.util.comparator.CrowdingComparator;
 import jmetal.util.evaluator.SolutionSetEvaluator;
-
 /**
  * Implementation of NSGA-II.
  * This implementation of NSGA-II makes use of a QualityIndicator object
@@ -41,13 +42,12 @@ import jmetal.util.evaluator.SolutionSetEvaluator;
 public class NSGAII extends Algorithm {
   private static final long serialVersionUID = 5815971727148859507L;
 
+  //@Inject
   private SolutionSetEvaluator evaluator_ ;
 
   private int populationSize_;
   private int maxEvaluations_;
   private int evaluations_;
-
-  private QualityIndicator indicators_;
 
   private SolutionSet population_;
   private SolutionSet offspringPopulation_;
@@ -58,17 +58,17 @@ public class NSGAII extends Algorithm {
   private Operator selectionOperator_;
 
   private Distance distance_ ;
-  private int requiredEvaluations_;
 
-
-  public NSGAII(Problem problemToSolve, SolutionSetEvaluator evaluator) {
-    super(problemToSolve);
-    evaluator_ = evaluator ;
+  //public NSGAII(Problem problemToSolve, SolutionSetEvaluator evaluator) {
+  //public NSGAII(Problem problemToSolve) {
+ 
+  public NSGAII() {
+	  super();
     evaluations_ = 0 ;
     distance_ = new Distance();
-    requiredEvaluations_ = 0;
   }
-
+  
+  
   /**
    * Runs the NSGA-II algorithm.
    *
@@ -105,7 +105,7 @@ public class NSGAII extends Algorithm {
 
       population_.clear();
       int rankingIndex = 0 ;
-      while (population_.size() < populationSize_) {
+      while (populationIsNotFull()) {
         if (subfrontFillsIntoThePopulation(ranking, rankingIndex)) {
           addRankedSolutionsToPopulation(ranking, rankingIndex);
           rankingIndex ++ ;
@@ -114,18 +114,16 @@ public class NSGAII extends Algorithm {
           addLastRankedSolutions(ranking, rankingIndex);
         }
       }
-    }
+    }    
 
-    // Return the first non-dominated front
-    Ranking ranking = new Ranking(population_);
+    tearDown() ;
 
-    return ranking.getSubfront(0);
+    return getNonDominatedSolutions() ;
   }
 
   void readParameterSettings() {
     populationSize_ = ((Integer) getInputParameter("populationSize")).intValue();
     maxEvaluations_ = ((Integer) getInputParameter("maxEvaluations")).intValue();
-    indicators_ = (QualityIndicator) getInputParameter("indicators");
 
     mutationOperator_ = operators_.get("mutation");
     crossoverOperator_ = operators_.get("crossover");
@@ -194,5 +192,12 @@ public class NSGAII extends Algorithm {
   boolean subfrontFillsIntoThePopulation(Ranking ranking, int rank) {
     return ranking.getSubfront(rank).size() < (populationSize_ - population_.size()) ;
   }
+  
+  SolutionSet getNonDominatedSolutions() throws JMException {
+    return new Ranking(population_).getSubfront(0);
+  }
 
+  void tearDown() {
+    evaluator_.shutdown(); 
+  }
 } 

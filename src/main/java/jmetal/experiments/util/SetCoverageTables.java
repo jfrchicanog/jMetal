@@ -53,7 +53,7 @@ public class SetCoverageTables implements IExperimentOutput {
   }
 
   @Override
-  public void generate() throws IOException {
+  public void generate() throws IOException, JMException {
     createOutputDirectory();
 
     String outputTexFile = outputDirectoryName_ + "/" + "setCoverage.tex";
@@ -83,7 +83,8 @@ public class SetCoverageTables implements IExperimentOutput {
     fileWriter_.write("\\section{Tables}" + "\n");
   }
 
-  private void generateTable(String problem)  {
+
+  private void generateTable(String problem) throws IOException, JMException {
     writeTableHeader(problem);
 
     for (int i = 0 ; i < experiment_.getAlgorithmNameList().length; i++) {

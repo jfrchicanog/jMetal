@@ -32,6 +32,7 @@ import jmetal.problems.ProblemFactory;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.Configuration;
 import jmetal.util.JMException;
+import jmetal.util.evaluator.MultithreadedSolutionSetEvaluator;
 import jmetal.util.evaluator.SequentialSolutionSetEvaluator;
 import jmetal.util.evaluator.SolutionSetEvaluator;
 import jmetal.util.fileOutput.DefaultFileOutputContext;
@@ -42,6 +43,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * Class to configure and execute the NSGA-II algorithm.
@@ -55,8 +59,8 @@ import java.util.logging.Logger;
  */
 
 public class NSGAIIRunner {
-  public static Logger logger_;
-  public static FileHandler fileHandler_;
+  private static Logger logger_;
+  private static FileHandler fileHandler_;
 
   /**
    * @param args Command line arguments.
@@ -72,6 +76,7 @@ public class NSGAIIRunner {
     SecurityException,
     IOException,
     ClassNotFoundException {
+    
     Problem problem;
     Algorithm algorithm;
     Operator crossover;
@@ -106,10 +111,12 @@ public class NSGAIIRunner {
     //Injector injector = Guice.createInjector(new ExecutorModule()) ;
     //Executor executor = injector.getInstance(Executor.class) ;
 
-    SolutionSetEvaluator evaluator = new SequentialSolutionSetEvaluator();
-    //SolutionSetEvaluator executor = new MultithreadedSolutionSetEvaluator(4, problem) ;
-    algorithm = new NSGAII(problem, evaluator);
-
+    System.out.println(problem.getNumberOfObjectives());
+    Injector injector = Guice.createInjector();
+    algorithm = injector.getInstance(NSGAII.class);
+    //algorithm.setProblem(problem);
+    
+    
     // Algorithm parameters
     algorithm.setInputParameter("populationSize", 100);
     algorithm.setInputParameter("maxEvaluations", 25000);
@@ -134,9 +141,6 @@ public class NSGAIIRunner {
     algorithm.addOperator("mutation", mutation);
     algorithm.addOperator("selection", selection);
 
-    // Add the indicator object to the algorithm
-    algorithm.setInputParameter("indicators", indicators);
-
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();
     SolutionSet population = algorithm.execute();
@@ -154,8 +158,7 @@ public class NSGAIIRunner {
     fileContext.setSeparator("\t");
 
     SolutionSetOutput.printObjectivesToFile(fileContext, population);
-    //population.printObjectivesToFile("FUN");
-    //logger_.info("Objectives values have been written to file FUN");
+    logger_.info("Objectives values have been written to file FUN");
     
     if (indicators != null) {
       logger_.info("Quality indicators");
@@ -164,11 +167,6 @@ public class NSGAIIRunner {
       logger_.info("IGD        : " + indicators.getIGD(population));
       logger_.info("Spread     : " + indicators.getSpread(population));
       logger_.info("Epsilon    : " + indicators.getEpsilon(population));
-
-      int evaluations = (Integer) algorithm.getOutputParameter("evaluations");
-      logger_.info("Speed      : " + evaluations + " evaluations");
     }
-
-    evaluator.shutdown();
   }
 }

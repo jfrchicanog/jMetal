@@ -89,10 +89,11 @@ public class pNSGAII_Settings extends Settings {
 
     HashMap parameters;
 
-    SolutionSetEvaluator evaluator = new MultithreadedSolutionSetEvaluator(4, problem_) ;
+    SolutionSetEvaluator evaluator = new MultithreadedSolutionSetEvaluator(0, problem_) ;
 
     // Creating the algorithm. 
-    algorithm = new NSGAII(problem_, evaluator);
+    algorithm = new NSGAII();
+    algorithm.setProblem(problem_);
 
     // Algorithm parameters
     algorithm.setInputParameter("populationSize", populationSize_);
@@ -139,7 +140,8 @@ public class pNSGAII_Settings extends Settings {
     SolutionSetEvaluator evaluator = new MultithreadedSolutionSetEvaluator(numberOfThreads_, problem_) ;
 
     // Creating the algorithm.
-    algorithm = new NSGAII(problem_, evaluator);
+    algorithm = new NSGAII();
+    algorithm.setProblem(problem_);
 
     // Algorithm parameters
     populationSize_ = Integer

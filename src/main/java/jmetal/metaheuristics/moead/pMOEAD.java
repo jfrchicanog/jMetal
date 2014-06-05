@@ -104,8 +104,8 @@ public class pMOEAD extends Algorithm implements Runnable {
    *
    * @param problem Problem to solve
    */
-  public pMOEAD(Problem problem) {
-    super(problem);
+  public pMOEAD() {
+    super();
     parentThread_ = null;
 
     functionType_ = "_TCHE1";
@@ -119,8 +119,8 @@ public class pMOEAD extends Algorithm implements Runnable {
    * @param problem Problem to solve
    */
 
-  public pMOEAD(pMOEAD parentThread, Problem problem, int id, int numberOfThreads) {
-    super(problem);
+  public pMOEAD(pMOEAD parentThread, int id, int numberOfThreads) {
+    super();
     parentThread_ = parentThread;
 
     numberOfThreads_ = numberOfThreads;
@@ -272,7 +272,7 @@ public class pMOEAD extends Algorithm implements Runnable {
     initTime_ = System.currentTimeMillis();
 
     for (int i = 0; i < numberOfThreads_; i++) {
-      thread_[i] = new Thread(new pMOEAD(this, problem_, i, numberOfThreads_), "pepe");
+      thread_[i] = new Thread(new pMOEAD(this, i, numberOfThreads_), "pepe");
       thread_[i].start();
     }
 
