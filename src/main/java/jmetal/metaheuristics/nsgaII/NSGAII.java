@@ -20,8 +20,11 @@
 
 package jmetal.metaheuristics.nsgaII;
 
+import com.google.inject.Inject;
+
 import jmetal.core.Algorithm;
 import jmetal.core.Operator;
+import jmetal.core.Problem;
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.util.Distance;
@@ -42,7 +45,7 @@ import jmetal.util.evaluator.SolutionSetEvaluator;
 public class NSGAII extends Algorithm {
   private static final long serialVersionUID = 5815971727148859507L;
 
-  //@Inject
+  @Inject
   private SolutionSetEvaluator evaluator_ ;
 
   private int populationSize_;
@@ -61,9 +64,10 @@ public class NSGAII extends Algorithm {
 
   //public NSGAII(Problem problemToSolve, SolutionSetEvaluator evaluator) {
   //public NSGAII(Problem problemToSolve) {
- 
-  public NSGAII() {
+ @Inject
+  public NSGAII(Problem problem) {
 	  super();
+	  this.setProblem(problem);
     evaluations_ = 0 ;
     distance_ = new Distance();
   }

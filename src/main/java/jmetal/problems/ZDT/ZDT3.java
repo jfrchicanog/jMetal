@@ -21,6 +21,8 @@
 
 package jmetal.problems.ZDT;
 
+import com.google.inject.Inject;
+
 import jmetal.core.Problem;
 import jmetal.core.Solution;
 import jmetal.encodings.solutiontype.ArrayRealSolutionType;
@@ -40,6 +42,11 @@ public class ZDT3 extends Problem {
    */
   private static final long serialVersionUID = -773138580076559651L;
 
+  @Inject
+  public ZDT3() throws ClassNotFoundException, JMException {
+	  this("Real");
+  }
+  
   /**
    * Constructor.
    * Creates default instance of problem ZDT3 (30 decision variables.
